@@ -1,0 +1,93 @@
+appdata==2.1.2
+backcall==0.2.0
+colored==1.4.3
+colorlover==0.3.0
+dash-core-components==2.0.0
+dash-html-components==2.0.0
+dash-iconify==0.1.2
+dash-mantine-components==0.10.2
+dash-table==5.0.0
+distlib==0.3.7
+docopt==0.6.2
+fastjsonschema==2.18.0
+flatbuffers==23.5.26
+ipykernel==6.29.4
+keras==2.11.0
+kiwisolver==1.4.5
+libclang==16.0.6
+loguru==0.7.2
+markdown==3.4.4
+markupsafe==2.1.3
+nodeenv==1.8.0
+oauthlib==3.2.2
+pandas==2.2.2
+pickleshare==0.7.5
+pillow==10.0.0
+pip==24.0
+pip-chill==1.0.3
+pipdeptree==2.10.0
+protobuf==3.19.6
+py==1.11.0
+pyasn1==0.5.0
+pyjwt==2.8.0
+pyparsing==3.0.9
+pyspark==3.4.1
+python-dotenv==1.0.0
+pyyaml==6.0.1
+regex==2023.6.3
+requests==2.31.0
+retrying==1.3.4
+rpds-py==0.10.2
+tenacity==8.2.3
+tensorboard-data-server==0.6.1
+tensorboard-plugin-wit==1.8.1
+tensorflow-estimator==2.11.0
+tensorflow-io-gcs-filesystem==0.31.0
+termcolor==1.1.0
+threadpoolctl==3.2.0
+toml==0.10.2
+tomli==2.0.1
+visdcc==0.0.50
+wheel==0.43.0
+widgetsnbextension==4.0.8
+wrapt==1.15.0
+yolk3k==0.9
+# asttokens==2.4.1 # Installed as dependency for stack-data
+# certifi==2024.2.2 # Installed as dependency for requests
+# charset-normalizer==3.3.2 # Installed as dependency for requests
+# colorama==0.4.6 # Installed as dependency for ipython, loguru
+# comm==0.2.2 # Installed as dependency for ipykernel
+# debugpy==1.8.1 # Installed as dependency for ipykernel
+# decorator==5.1.1 # Installed as dependency for ipython
+# exceptiongroup==1.2.1 # Installed as dependency for ipython
+# executing==1.2.0 # Installed as dependency for stack-data
+# idna==3.7 # Installed as dependency for requests
+# ipython==8.24.0 # Installed as dependency for ipykernel
+# jedi==0.19.1 # Installed as dependency for ipython
+# jupyter-client==8.6.1 # Installed as dependency for ipykernel
+# jupyter-core==5.7.2 # Installed as dependency for ipykernel, jupyter-client
+# matplotlib-inline==0.1.7 # Installed as dependency for ipykernel, ipython
+# nest-asyncio==1.5.7 # Installed as dependency for ipykernel
+# numpy==1.25.2 # Installed as dependency for pandas
+# packaging==24.0 # Installed as dependency for ipykernel
+# parso==0.8.3 # Installed as dependency for jedi
+# platformdirs==3.10.0 # Installed as dependency for jupyter-core
+# prompt-toolkit==3.0.43 # Installed as dependency for ipython
+# psutil==5.9.8 # Installed as dependency for ipykernel
+# pure-eval==0.2.2 # Installed as dependency for stack-data
+# py4j==0.10.9.7 # Installed as dependency for pyspark
+# pygments==2.16.1 # Installed as dependency for ipython
+# python-dateutil==2.8.2 # Installed as dependency for jupyter-client, pandas
+# pytz==2023.3.post1 # Installed as dependency for pandas
+# pywin32==306 # Installed as dependency for jupyter-core
+# pyzmq==26.0.3 # Installed as dependency for ipykernel, jupyter-client
+# setuptools==69.5.1 # Installed as dependency for nodeenv
+# six==1.16.0 # Installed as dependency for asttokens, python-dateutil, retrying
+# stack-data==0.6.3 # Installed as dependency for ipython
+# tornado==6.4 # Installed as dependency for ipykernel, jupyter-client
+# traitlets==5.14.3 # Installed as dependency for comm, ipykernel, ipython, jupyter-client, jupyter-core, matplotlib-inline
+# typing-extensions==4.7.1 # Installed as dependency for ipython
+# tzdata==2023.3 # Installed as dependency for pandas
+# urllib3==2.2.1 # Installed as dependency for requests
+# wcwidth==0.2.6 # Installed as dependency for prompt-toolkit
+# win32-setctime==1.1.0 # Installed as dependency for loguru
