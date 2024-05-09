@@ -4,6 +4,7 @@
 import requests
 import re
 
+from src.forqan_scraper import ForqanScraper
 
 # %% 
 print("Welcome to Forqan scraper & Explainer!")
@@ -14,44 +15,7 @@ print("Welcome to Forqan scraper & Explainer!")
 # password = input()
 
 
-cookies = {
-    'wordpress_test_cookie': 'WP+Cookie+check',
-}
-
-headers = {
-    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-    'accept-language': 'en-US,en;q=0.9,en-GB;q=0.8,ar;q=0.7',
-    'cache-control': 'max-age=0',
-    'content-type': 'application/x-www-form-urlencoded',
-    # 'cookie': 'wordpress_test_cookie=WP+Cookie+check',
-    'origin': 'https://forqanacademy.com',
-    'priority': 'u=0, i',
-    'referer': 'https://forqanacademy.com/login/',
-    'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    'sec-fetch-dest': 'document',
-    'sec-fetch-mode': 'navigate',
-    'sec-fetch-site': 'same-origin',
-    'sec-fetch-user': '?1',
-    'upgrade-insecure-requests': '1',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-}
-
-data = {
-    'username-17384': 'XXX',
-    'user_password-17384': 'XXX',
-    'form_id': '17384',
-    'um_request': '',
-    '_wpnonce': 'b92a993bec',
-    '_wp_http_referer': '/login/',
-    'rememberme': '1',
-}
-
-# Create a session object
-sess = requests.Session()
-
-response = sess.post('https://forqanacademy.com/login/', cookies=cookies, headers=headers, data=data)
+response = ForqanScraper.login("XXX", "XXX")
 
 # %% 
 

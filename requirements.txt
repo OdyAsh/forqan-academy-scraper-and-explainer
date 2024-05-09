@@ -1,0 +1,238 @@
+-ackaging==23.1
+appdata==2.1.2
+backcall==0.2.0
+better-exceptions==0.3.3
+brotli==1.1.0
+chart-studio==1.1.0
+colored==1.4.3
+conda-libmamba-solver==23.3.0
+conda-package-handling==2.2.0
+cufflinks==0.17.3
+dash-tools==1.12.0
+dask-expr==1.1.0
+dtaidistance==2.3.11
+frida-tools==12.2.1
+hijri-converter==2.3.1
+jsonpatch==1.32
+loguru==0.7.2
+mamba==1.4.2
+mlflow==2.12.1
+munkres==1.1.4
+nbformat==5.10.4
+numba==0.59.1
+oauthlib==3.2.2
+openpyxl==3.1.2
+pandas-dq==1.29
+pdoc3==0.10.0
+pickleshare==0.7.5
+pip-chill==1.0.3
+pip-tools==7.4.1
+pipdeptree==2.10.0
+plotly-calplot==0.1.20
+pooch==1.8.1
+powerbiclient==3.1.1
+prophet==1.1.5
+pyasn1-modules==0.3.0
+pyodbc==5.1.0
+pyopenssl==23.2.0
+pyprojroot==0.3.0
+pysocks==1.7.1
+python-benedict==0.33.2
+python-dotenv==1.0.0
+regex==2023.6.3
+river==0.21.1
+rsa==4.9
+seaborn==0.13.2
+sktime==0.29.0
+swifter==1.4.0
+tbats==1.1.3
+tensorboard-plugin-wit==1.8.1
+tensorflow==2.16.1
+tensorflow-estimator==2.11.0
+unicodedata2==15.1.0
+varname==0.13.1
+win-inet-pton==1.1.0
+# absl-py==2.1.0 # Installed as dependency for keras, tensorboard, tensorflow-intel
+# alembic==1.13.1 # Installed as dependency for mlflow
+# aniso8601==9.0.1 # Installed as dependency for graphene
+# asttokens==2.4.1 # Installed as dependency for stack-data
+# astunparse==1.6.3 # Installed as dependency for tensorflow-intel
+# atomicwrites==1.4.1 # Installed as dependency for pytest
+# attrs==23.2.0 # Installed as dependency for jsonschema, pytest, referencing
+# blinker==1.8.2 # Installed as dependency for flask
+# boltons==23.0.0 # Installed as dependency for conda-libmamba-solver
+# build==1.2.1 # Installed as dependency for pip-tools
+# certifi==2023.7.22 # Installed as dependency for requests
+# cffi==1.15.1 # Installed as dependency for cryptography
+# cfgv==3.4.0 # Installed as dependency for pre-commit
+# charset-normalizer==3.2.0 # Installed as dependency for requests
+# click==8.1.7 # Installed as dependency for dask, flask, mlflow, pip-tools
+# cloudpickle==3.0.0 # Installed as dependency for dask, mlflow
+# cmdstanpy==1.2.2 # Installed as dependency for prophet
+# colorama==0.4.6 # Installed as dependency for better-exceptions, build, click, frida-tools, ipython, loguru, pytest, tqdm
+# colorlover==0.3.0 # Installed as dependency for cufflinks
+# comm==0.2.2 # Installed as dependency for ipywidgets
+# conda==23.3.1 # Installed as dependency for conda-libmamba-solver, mamba
+# conda-package-streaming==0.9.0 # Installed as dependency for conda-package-handling
+# contourpy==1.2.1 # Installed as dependency for matplotlib
+# cryptography==41.0.3 # Installed as dependency for msal, pyopenssl
+# cycler==0.12.1 # Installed as dependency for matplotlib
+# cython==3.0.10 # Installed as dependency for pmdarima
+# dash==2.17.0 # Installed as dependency for dash-bootstrap-components, dash-tools
+# dash-bootstrap-components==1.6.0 # Installed as dependency for dash-tools
+# dash-core-components==2.0.0 # Installed as dependency for dash
+# dash-html-components==2.0.0 # Installed as dependency for dash
+# dash-iconify==0.1.2 # Installed as dependency for dash-tools
+# dash-mantine-components==0.12.0 # Installed as dependency for dash-tools
+# dash-table==5.0.0 # Installed as dependency for dash
+# dask==2024.5.0 # Installed as dependency for dask-expr, swifter
+# decorator==5.1.1 # Installed as dependency for ipython
+# distlib==0.3.7 # Installed as dependency for virtualenv
+# docker==7.0.0 # Installed as dependency for mlflow
+# docopt==0.6.2 # Installed as dependency for pipreqs
+# entrypoints==0.4 # Installed as dependency for mlflow
+# et-xmlfile==1.1.0 # Installed as dependency for openpyxl
+# exceptiongroup==1.2.1 # Installed as dependency for ipython
+# executing==2.0.1 # Installed as dependency for stack-data, varname
+# fastjsonschema==2.18.0 # Installed as dependency for nbformat
+# filelock==3.14.0 # Installed as dependency for virtualenv
+# flask==3.0.3 # Installed as dependency for dash, dash-tools, mlflow
+# flatbuffers==23.5.26 # Installed as dependency for tensorflow-intel
+# fonttools==4.51.0 # Installed as dependency for matplotlib
+# frida==16.1.4 # Installed as dependency for frida-tools
+# fsspec==2024.3.1 # Installed as dependency for dask
+# gast==0.5.4 # Installed as dependency for tensorflow-intel
+# gitdb==4.0.11 # Installed as dependency for gitpython
+# gitpython==3.1.43 # Installed as dependency for mlflow
+# google-pasta==0.2.0 # Installed as dependency for tensorflow-intel
+# graphene==3.3 # Installed as dependency for mlflow
+# graphql-core==3.2.3 # Installed as dependency for graphene, graphql-relay
+# graphql-relay==3.2.0 # Installed as dependency for graphene
+# greenlet==3.0.3 # Installed as dependency for sqlalchemy
+# grpcio==1.63.0 # Installed as dependency for tensorboard, tensorflow-intel
+# gunicorn==22.0.0 # Installed as dependency for dash-tools
+# h5py==3.11.0 # Installed as dependency for keras, tensorflow-intel
+# holidays==0.48 # Installed as dependency for prophet
+# identify==2.5.36 # Installed as dependency for pre-commit
+# idna==3.4 # Installed as dependency for requests
+# importlib-metadata==7.1.0 # Installed as dependency for dash, dask, mlflow
+# importlib-resources==6.4.0 # Installed as dependency for prophet
+# iniconfig==2.0.0 # Installed as dependency for pytest
+# ipython==8.24.0 # Installed as dependency for cufflinks, ipywidgets, jupyter-ui-poll
+# ipywidgets==8.1.2 # Installed as dependency for cufflinks, powerbiclient
+# itsdangerous==2.2.0 # Installed as dependency for flask
+# jedi==0.19.1 # Installed as dependency for ipython
+# jinja2==3.1.4 # Installed as dependency for flask, mlflow
+# joblib==1.4.2 # Installed as dependency for pmdarima, scikit-learn
+# jsonpointer==2.4 # Installed as dependency for jsonpatch
+# jsonschema==4.22.0 # Installed as dependency for nbformat
+# jsonschema-specifications==2023.12.1 # Installed as dependency for jsonschema
+# jupyter-core==5.7.2 # Installed as dependency for nbformat
+# jupyter-ui-poll==0.2.2 # Installed as dependency for powerbiclient
+# jupyterlab-widgets==3.0.10 # Installed as dependency for ipywidgets
+# keras==3.3.3 # Installed as dependency for tensorflow-intel
+# kiwisolver==1.4.5 # Installed as dependency for matplotlib
+# libclang==16.0.6 # Installed as dependency for tensorflow-intel
+# libmambapy==1.4.2 # Installed as dependency for conda-libmamba-solver, mamba
+# llvmlite==0.42.0 # Installed as dependency for numba
+# locket==1.0.0 # Installed as dependency for partd
+# mako==1.3.3 # Installed as dependency for alembic, pdoc3
+# markdown==3.4.4 # Installed as dependency for mlflow, pdoc3, tensorboard
+# markdown-it-py==3.0.0 # Installed as dependency for rich
+# markupsafe==2.1.3 # Installed as dependency for jinja2, mako, werkzeug
+# matplotlib==3.8.4 # Installed as dependency for mlflow, prophet, seaborn
+# matplotlib-inline==0.1.7 # Installed as dependency for ipython
+# mdurl==0.1.2 # Installed as dependency for markdown-it-py
+# menuinst==1.4.19 # Installed as dependency for conda
+# ml-dtypes==0.3.2 # Installed as dependency for keras, tensorflow-intel
+# msal==1.28.0 # Installed as dependency for powerbiclient
+# namex==0.0.8 # Installed as dependency for keras
+# nest-asyncio==1.5.7 # Installed as dependency for dash
+# nodeenv==1.8.0 # Installed as dependency for pre-commit
+# numpy==1.25.2 # Installed as dependency for cmdstanpy, contourpy, cufflinks, dtaidistance, h5py, keras, matplotlib, ml-dtypes, mlflow, numba, opt-einsum, pandas, pandas-dq, patsy, plotly-calplot, pmdarima, prophet, pyarrow, river, scikit-learn, scipy, seaborn, sktime, stanio, statsmodels, tbats, tensorboard, tensorflow-intel
+# opt-einsum==3.3.0 # Installed as dependency for tensorflow-intel
+# optree==0.11.0 # Installed as dependency for keras
+# packaging==21.3 # Installed as dependency for build, dash-tools, dask, docker, gunicorn, matplotlib, mlflow, plotly, pmdarima, pooch, pytest, sktime, statsmodels, tensorflow-intel
+# pandas==2.2.2 # Installed as dependency for cmdstanpy, cufflinks, dash-tools, dask-expr, mlflow, pandas-dq, plotly-calplot, pmdarima, powerbiclient, prophet, river, seaborn, sktime, statsmodels, swifter
+# parso==0.8.3 # Installed as dependency for jedi
+# partd==1.4.2 # Installed as dependency for dask
+# patsy==0.5.6 # Installed as dependency for statsmodels
+# pillow==10.0.0 # Installed as dependency for matplotlib
+# pip==23.2.1 # Installed as dependency for pip-tools
+# pipreqs==0.4.12 # Installed as dependency for dash-tools
+# platformdirs==3.10.0 # Installed as dependency for jupyter-core, pooch, virtualenv
+# plotly==5.22.0 # Installed as dependency for chart-studio, cufflinks, dash, plotly-calplot
+# pluggy==1.3.0 # Installed as dependency for conda, pytest
+# pmdarima==2.0.4 # Installed as dependency for tbats
+# polars==0.20.25 # Installed as dependency for river
+# pre-commit==2.16.0 # Installed as dependency for dash-tools
+# prompt-toolkit==3.0.43 # Installed as dependency for frida-tools, ipython
+# protobuf==4.25.3 # Installed as dependency for mlflow, tensorboard, tensorflow-intel
+# psutil==5.9.8 # Installed as dependency for swifter
+# pure-eval==0.2.2 # Installed as dependency for stack-data
+# py==1.11.0 # Installed as dependency for pytest
+# py4j==0.10.9.7 # Installed as dependency for pyspark
+# pyarrow==15.0.2 # Installed as dependency for dask-expr, mlflow
+# pyasn1==0.5.0 # Installed as dependency for pyasn1-modules, rsa
+# pycosat==0.6.4 # Installed as dependency for conda
+# pycparser==2.21 # Installed as dependency for cffi
+# pygments==2.16.1 # Installed as dependency for frida-tools, ipython, rich
+# pyjwt==2.8.0 # Installed as dependency for msal
+# pyparsing==3.0.9 # Installed as dependency for matplotlib, packaging
+# pyproject-hooks==1.0.0 # Installed as dependency for build, pip-tools
+# pyspark==3.4.1 # Installed as dependency for powerbiclient
+# pytest==6.2.5 # Installed as dependency for dash-tools
+# python-dateutil==2.8.2 # Installed as dependency for holidays, matplotlib, pandas
+# python-fsutil==0.14.1 # Installed as dependency for python-benedict
+# python-slugify==8.0.4 # Installed as dependency for python-benedict
+# pytz==2023.3.post1 # Installed as dependency for mlflow, pandas, plotly-calplot
+# pywin32==306 # Installed as dependency for docker, jupyter-core
+# pyyaml==6.0.1 # Installed as dependency for dask, mlflow, pre-commit
+# querystring-parser==1.2.4 # Installed as dependency for mlflow
+# referencing==0.35.1 # Installed as dependency for jsonschema, jsonschema-specifications
+# requests==2.31.0 # Installed as dependency for chart-studio, conda, conda-package-streaming, dash, docker, mlflow, msal, pooch, powerbiclient, python-benedict, tensorflow-intel, yarg
+# retrying==1.3.4 # Installed as dependency for chart-studio, dash
+# rich==13.7.1 # Installed as dependency for keras
+# rpds-py==0.10.2 # Installed as dependency for jsonschema, referencing
+# ruamel.yaml==0.17.21 # Installed as dependency for conda, dash-tools
+# ruamel.yaml.clib==0.2.7 # Installed as dependency for ruamel.yaml
+# scikit-base==0.7.7 # Installed as dependency for sktime
+# scikit-learn==1.4.2 # Installed as dependency for mlflow, pandas-dq, pmdarima, sktime, tbats
+# scipy==1.11.2 # Installed as dependency for mlflow, pmdarima, river, scikit-learn, sktime, statsmodels, tbats
+# setuptools==68.2.2 # Installed as dependency for cufflinks, dash, dash-tools, nodeenv, pip-tools, pmdarima, tensorboard, tensorflow-intel
+# six==1.16.0 # Installed as dependency for asttokens, astunparse, chart-studio, cufflinks, google-pasta, patsy, python-dateutil, querystring-parser, retrying, tensorboard, tensorflow-intel
+# smmap==5.0.1 # Installed as dependency for gitdb
+# sqlalchemy==2.0.30 # Installed as dependency for alembic, mlflow
+# sqlparse==0.5.0 # Installed as dependency for mlflow
+# stack-data==0.6.3 # Installed as dependency for ipython
+# stanio==0.5.0 # Installed as dependency for cmdstanpy
+# statsmodels==0.14.2 # Installed as dependency for pmdarima
+# tenacity==8.2.3 # Installed as dependency for plotly
+# tensorboard==2.16.2 # Installed as dependency for tensorflow-intel
+# tensorboard-data-server==0.7.2 # Installed as dependency for tensorboard
+# tensorflow-intel==2.16.1 # Installed as dependency for tensorflow
+# tensorflow-io-gcs-filesystem==0.31.0 # Installed as dependency for tensorflow-intel
+# termcolor==1.1.0 # Installed as dependency for dash-tools, tensorflow-intel
+# text-unidecode==1.3 # Installed as dependency for python-slugify
+# threadpoolctl==3.2.0 # Installed as dependency for scikit-learn
+# toml==0.10.2 # Installed as dependency for pre-commit, pytest
+# tomli==2.0.1 # Installed as dependency for build, pip-tools, pyproject-hooks
+# toolz==0.12.0 # Installed as dependency for dask, partd
+# tqdm==4.66.1 # Installed as dependency for cmdstanpy, conda, prophet, swifter
+# traitlets==5.14.3 # Installed as dependency for comm, ipython, ipywidgets, jupyter-core, matplotlib-inline, nbformat
+# typing-extensions==4.7.1 # Installed as dependency for alembic, dash, frida, ipython, optree, pyprojroot, sqlalchemy, tensorflow-intel
+# tzdata==2023.3 # Installed as dependency for pandas
+# urllib3==1.26.16 # Installed as dependency for docker, pmdarima, requests
+# virtualenv==20.26.1 # Installed as dependency for pre-commit
+# visdcc==0.0.50 # Installed as dependency for dash-tools
+# waitress==3.0.0 # Installed as dependency for mlflow
+# wcwidth==0.2.6 # Installed as dependency for prompt-toolkit
+# werkzeug==3.0.3 # Installed as dependency for dash, flask, tensorboard
+# wheel==0.41.2 # Installed as dependency for astunparse, pip-tools
+# widgetsnbextension==4.0.10 # Installed as dependency for ipywidgets
+# win32-setctime==1.1.0 # Installed as dependency for loguru
+# wrapt==1.15.0 # Installed as dependency for tensorflow-intel
+# yarg==0.1.9 # Installed as dependency for pipreqs
+# yolk3k==0.9 # Installed as dependency for dash-tools
+# zipp==3.18.1 # Installed as dependency for importlib-metadata
+# zstandard==0.21.0 # Installed as dependency for conda-package-streaming
