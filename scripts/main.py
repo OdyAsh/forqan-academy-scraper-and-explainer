@@ -1,21 +1,33 @@
+# %%
+# autoreload reloads modules automatically before entering the execution of code typed at the IPython prompt
+# however, if you define an entirely new function or class in the imported modules (i.e., .py files)
+# then you'll need to re-run the 'from .. import' statements in the notebook
+try:    
+    if '__file__' in globals():
+        raise
+    from IPython import get_ipython
+    ipython = get_ipython()
+    print('wwwoooow')
+    ipython.run_line_magic('load_ext', 'autoreload')
+    ipython.run_line_magic('autoreload', '2')
+except Exception as e:
+    print('file is founddd')
+    pass
+
 # %% 
 # # Imports
 
-import requests
 import re
+import requests
+from bs4 import BeautifulSoup as bs
 
-from src.forqan_scraper import ForqanScraper
+from forqan_academy_scraper.scraper import login
+from logaru_logger.the_logger import logger
 
 # %% 
-print("Welcome to Forqan scraper & Explainer!")
-# # logging in
-# print("Enter your email or mobile number: ")
-# email = input()
-# print("Enter your password: ")
-# password = input()
+logger.info("Welcome to Forqan scraper & Explainer!")
 
-
-response = ForqanScraper.login("XXX", "XXX")
+session, response = login()
 
 # %% 
 

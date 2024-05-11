@@ -1,2 +1,7 @@
 .conda/*
+*.pyc
+.env
+
+logs/*
+scripts/logs/*
 secretss/*

@@ -1,0 +1,33 @@
+{
+    // to automatically run the commands below whenever 
+    // a new interactive VSCode otebook (from .py) is opened, follow these steps:
+    // 1. copy the commands below
+    // 2. press `Ctrl + Shift + P` to open the command palette
+    // 3. type `Preferences: Open User Settings (JSON)` and select it
+    // 4. paste the commands below into the file that opens
+    // 5. save the file
+    // 6. add special comments to the targeted .py file, as mentioned here: 
+    // https://code.visualstudio.com/docs/python/jupyter-support-py
+    
+    // 7. now, when you run the interactive notebook, the commands below will be executed automatically in the background
+    //    this means that whenever you update a **function** in an imported file, the changes will be reflected in the notebook
+    
+    //    However, for some reason, this doesn't work with **static classes** imported like this:
+    //      from my_module import MyStaticClass # changes to MyStaticClass won't be reflected in the notebook
+    //    but it works with **static classes** imported like this:
+    //      import my_module as mm
+    //      mm.MyStaticClass # now the methods/attributes of MyStaticClass will be updated automatically
+    //    and a workaround like this won't work either:
+    //      MC = mm.MyStaticClass()
+    //      MC.some_method() # changes to some_method won't be reflected in the notebook
+    
+    //    moreover, the old attributes/methods of **instances of classes** will be retained, 
+    //    even if the class has been updated, so the only way to see the changes is to assign a new instance of the class to a new variable
+    
+    //    TLDR; when using autoreload, import functions and classes like so:
+    //      import my_module as mm # then later write `mm.MyStaticClass`
+    //      from my_module import my_function
+    "jupyter.runStartupCommands": [
+        "%load_ext autoreload", "%autoreload 2"
+      ],
+}

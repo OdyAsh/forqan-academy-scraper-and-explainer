@@ -1,0 +1,6 @@
+# pyproject.toml
+# Explanation for this file can be found in the comments of the `setup.py` file
+
+[build-system]
+requires = ["setuptools"] # These are not your project's dependencies, but the dependencies of the build system itself.
+build-backend = "setuptools.build_meta" 
