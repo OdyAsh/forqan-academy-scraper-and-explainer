@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# NOTE: move this file to the .git/hooks folder and rename it to pre-commit, then delete this comment :]
+
+# This file is a pre-commit hook that is executed before each commit in the Git repository.
+# It allows you to run custom scripts or perform checks before committing changes.
+# You can modify this file to add your own pre-commit actions or checks.
+# The code in this file will be executed automatically when you run the "git commit" command.
+# Make sure to save any changes made to this file before committing them.
+
+
+# Generate a requirements.txt file with all installed libraries and their versions
+pip-chill --all --verbose > requirements.txt
+
+# Generate a requirements.txt file with all installed libraries without their versions
+pip-chill --all --verbose --no-version > requirements-without-versions.txt
+
+# Add the generated files to the git staging area
+git add requirements.txt requirements-without-versions.txt
