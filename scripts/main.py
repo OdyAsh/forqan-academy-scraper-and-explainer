@@ -7,11 +7,9 @@ try:
         raise
     from IPython import get_ipython
     ipython = get_ipython()
-    print('wwwoooow')
     ipython.run_line_magic('load_ext', 'autoreload')
     ipython.run_line_magic('autoreload', '2')
 except Exception as e:
-    print('file is founddd')
     pass
 
 # %% 
@@ -33,6 +31,7 @@ session, response = login()
 
 # Assuming response.text is your HTML string
 login_response_html_string = response.text
+logger.debug(f"login_response_html_string: {login_response_html_string[-100:]}")
 
 # Regular expression pattern to match 'a' tags with class 'ld-item-name'
 pattern = r'<a href="(.*?)" class="ld-item-name">'
@@ -40,12 +39,12 @@ pattern = r'<a href="(.*?)" class="ld-item-name">'
 # Find all matches in the HTML string
 module_urls = re.findall(pattern, login_response_html_string)
 
-print(module_urls)
+logger.debug(f"module_urls: {module_urls}")
 
 # Now we have a list of URLs, we can loop through them and get the HTML of each module page
 module_pages = []
 for url in module_urls:
-    response = sess.get(url)
+    response = session.get(url)
     module_pages.append(response.text)
 
 

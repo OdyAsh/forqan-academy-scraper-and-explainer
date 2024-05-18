@@ -1,6 +1,7 @@
 .conda/*
 *.pyc
 .env
+**/*egg-info/*
 
 logs/*
 scripts/logs/*
