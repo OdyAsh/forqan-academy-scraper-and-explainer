@@ -19,7 +19,10 @@ logger.remove()
 lvl = 'DEBUG' if os.environ['DEBUG']=='1' else 'INFO'
 
 # Log to stdout
-logger.add(sys.stdout, level=lvl, enqueue=True)  
+# DEBUGGING NOTE: enqueue=False means that the logging calls are processed in the same thread 
+#   and so the application will wait for the logging to complete before continuing execution.
+#   This is done to avoid an ipykernel-related issue where the logging messages are all displayed in the first cell which logs a message.
+logger.add(sys.stdout, level=lvl, enqueue=False)  
 
 # all scripts' (i.e., sub-processes') logs will be stored 
 # in the same file of the i^th 10 minute range in today's date and hour
@@ -27,7 +30,7 @@ logger.add(sys.stdout, level=lvl, enqueue=True)
 # "PROJECT_ROOT_DIR/logs/run_log_2024-05-09_09h-30m.log"
 mm_interval = str((datetime.now().minute // 10) * 10)
 log_file_name = 'run_log_{time:YYYY-MM-DD_HH}h-' + mm_interval + 'm.log'
-log_file_path = os.path.join(str(pyprojroot.here()), 'logs', log_file_name) 
+log_file_path = os.path.join(str(pyprojroot.here()), 'logs', 'detailed_logs', log_file_name) 
 
 # Rotate log file every 100 MB in case the log is too large even in the span of these 10 minutes
 logger.add(log_file_path, rotation="100 MB")  
