@@ -147,3 +147,89 @@ def login(username: str = None,
     response = sess.post('https://forqanacademy.com/login/', headers=headers, data=data, cookies=cookies)
 
     return sess, response
+
+
+@log_decorator()
+def get_forqan_modules_urls_using_regex(html_string : str) -> List[str]:
+    """
+    Extracts the URLs of Forqan Academy modules from the given HTML string.
+    
+    Args:
+        html_string (str): The HTML string to search for module URLs.
+        
+    Returns:
+        list: A list of URLs of Forqan Academy modules.
+    """
+    
+    # Regular expression pattern to match 'a' tags with class 'ld-item-name'
+    pattern = r'<a href="(.*?)" class="ld-item-name">'
+    
+    # Find all matches in the HTML string
+    forqan_modules_urls = re.findall(pattern, html_string)
+    
+    return forqan_modules_urls
+
+@log_decorator()
+def get_modules_info_using_regex(forqan_modules_urls: List[str], session) -> List[Tuple[str, str]]:
+    """
+    Fetches and returns information about each module.
+
+    Parameters:
+    forqan_modules_urls (List[str]): A list of URLs for the Forqan modules.
+    session: A requests.Session object for making the requests.
+
+    Returns:
+    List[Tuple[str, str]]: A list of tuples, where each tuple contains the module name and the HTML of the module page.
+    """
+    modules_name_and_html = []
+    for url in forqan_modules_urls:
+
+        # fetching the module page from the URL
+        response = session.get(url)
+
+        # getting the module name
+        module_name = re.search(r'<title>(.*?)&#8211;', response.text)
+        if module_name:
+            module_name = module_name.group(1)
+            module_name = re.sub(r'\(\d+\)', '', module_name).strip()
+        else:
+            module_name = "No module name found"
+        logger.info(f"Module name: {module_name}")
+        modules_name_and_html.append((module_name, response.text))
+
+    return modules_name_and_html    
+
+@log_decorator()
+def get_lessons_info_using_regex(modules_name_and_html: List[Tuple[str, str]]) -> List[List[Tuple[str, str]]]:
+    """
+    Get the lessons info from each module page.
+
+    An "info" is a tuple containing the href URL and the lesson's name.
+    Therefore, the final returned value is a list of list of tuples,
+    where the outer lists represents the modules themselves,
+    and each inner list contains the lessons info (i.e., a tuple) for the i-th module.
+
+    Args:
+        modules_name_and_html (List[Tuple[str, str]]): A list of tuples, where each tuple contains the module name and the HTML of the module page.
+
+    Returns:
+        List[List[Tuple[str, str]]]: A list of list of tuples, where each tuple contains the lesson's name and URL.
+    """
+    lessons_names_and_urls = []
+    for module in modules_name_and_html:
+        
+        # getting current module's info
+        module_name, module_html_page = module
+        
+        # getting each lesson's name and URL for the current module
+        a_tag_pattern = r'<a class="ld-item-name.*?" href="(.*?)">.*?<span class="ld-topic-title">(.*?)</span>'
+        cur_lesson_names_and_urls = re.findall(a_tag_pattern, module_html_page, re.DOTALL)
+        if cur_lesson_names_and_urls:
+            # Switch the order of the groups in each match
+            cur_lesson_names_and_urls = [(match[1], match[0]) for match in cur_lesson_names_and_urls]
+
+        logger.info(f"Lessons matched for module {module_name}:\n{cur_lesson_names_and_urls}\n")
+        lessons_names_and_urls.append(cur_lesson_names_and_urls)
+        save_data(cur_lesson_names_and_urls, f"lessons_info for {module_name}", file_extension="json")
+
+    return lessons_names_and_urls

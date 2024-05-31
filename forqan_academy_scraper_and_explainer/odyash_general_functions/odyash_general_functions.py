@@ -1,3 +1,4 @@
+import json
 import os
 import pickle
 from typing import Any, Union
@@ -23,13 +24,26 @@ def _prefix_str_with_global_counter(string: str) -> str:
 
     return new_string
 
+def _create_directory(dir_name: str) -> None:
+    """
+    Create a directory if it does not exist.
+
+    Args:
+        dir_name (str): The directory name.
+
+    Returns:
+        None
+    """
+    os.makedirs(dir_name, exist_ok=True)
+
 def _get_directory(dir_name: Union[str, None], intermediate_output: bool) -> str:
     """
-    Get the directory path based on the given parameters.
+    Get the directory path based on the given parameters and create the directory if it does not exist.
 
     Args:
         dir_name (str): The directory name where the file will be saved.
         intermediate_output (bool): Flag indicating if it is an intermediate output.
+
     Returns:
         str: The directory path.
     """
@@ -38,6 +52,9 @@ def _get_directory(dir_name: Union[str, None], intermediate_output: bool) -> str
             dir_name = os.path.join(here(), os.getenv("INTERMEDIATE_OUTPUTS_DIR"))
         else:
             dir_name = os.path.join(here(), os.getenv("FINAL_OUTPUTS_DIR"))
+
+    _create_directory(dir_name)
+
     return dir_name
 
 def _get_file_path_without_extension(dir_name: str, file_name: str, add_intermediate_counter_prefix: bool) -> str:
@@ -56,6 +73,20 @@ def _get_file_path_without_extension(dir_name: str, file_name: str, add_intermed
         file_name = _prefix_str_with_global_counter(file_name)
     file_path_without_extension = os.path.join(dir_name, file_name)
     return file_path_without_extension
+
+def _save_data_to_json(file_path_without_extension: str, data_to_be_saved: Any) -> None:
+    """
+    Save data to a JSON file.
+
+    Args:
+        file_path_without_extension (str): The path of the file.
+        data_to_be_saved (Any): The data to be saved.
+
+    Returns:
+        None
+    """
+    with open(f'{file_path_without_extension}.json', "w") as file:
+        json.dump(data_to_be_saved, file, ensure_ascii=False, indent=4)
 
 def _save_data_to_txt(file_path_without_extension: str, data_to_be_saved: Any) -> None:
     """
@@ -85,7 +116,7 @@ def _save_data_to_pkl(file_path_without_extension: str, data_to_be_saved: Any) -
     with open(f'{file_path_without_extension}.pkl', "wb") as file:
         pickle.dump(data_to_be_saved, file)
 
-def _choose_save_extension(file_extension: Union[str, None], file_path_without_extension: str, data_to_be_saved: Any) -> None:
+def _save_data_based_on_extension(file_extension: Union[str, None], file_path_without_extension: str, data_to_be_saved: Any) -> None:
     """
     Choose the appropriate save function based on the file extension.
 
@@ -97,17 +128,19 @@ def _choose_save_extension(file_extension: Union[str, None], file_path_without_e
     Returns:
         None
     """
-    if file_extension == "txt" or file_extension is None:
+    if file_extension == "txt":
         _save_data_to_txt(file_path_without_extension, data_to_be_saved)
     elif file_extension == "pkl":
         _save_data_to_pkl(file_path_without_extension, data_to_be_saved)
+    elif file_extension == "json":
+        _save_data_to_json(file_path_without_extension, data_to_be_saved)
     else:
-        raise ValueError("Invalid file_extension. Supported file_extensions are '.txt' and '.pkl'.")
+        raise ValueError("Invalid file_extension. Supported file_extensions are 'txt', 'pkl', and 'json'.")
 
 def save_data(data_to_be_saved: Any, 
             file_name: str, 
             dir_name: Union[str, None] = None, 
-            file_extension: Union[str, None] = None,
+            file_extension: Union[str, None] = "txt",
             intermediate_output: bool = True,
             add_intermediate_counter_prefix: bool = True) -> None:
     """
@@ -117,7 +150,7 @@ def save_data(data_to_be_saved: Any,
         data_to_be_saved (Any): The data to be saved.
         file_name (str): The name of the file (without extension).
         dir_name (str, optional): The directory name where the file will be saved. Defaults to None.
-        file_extension (str, optional): The file extension. Defaults to None.
+        file_extension (str, optional): The file extension.
         intermediate_output (bool, optional): Flag indicating if it is an intermediate output. Defaults to True.
         add_intermediate_counter_prefix (bool, optional): Flag indicating if a counter prefix should be added to the file name. Defaults to False.
 
@@ -126,8 +159,9 @@ def save_data(data_to_be_saved: Any,
     """
     dir_name = _get_directory(dir_name, intermediate_output)
     file_path_without_extension = _get_file_path_without_extension(dir_name, file_name, add_intermediate_counter_prefix)
-
-    _choose_save_extension(file_extension, file_path_without_extension, data_to_be_saved)
+    
+    _save_data_based_on_extension(file_extension, file_path_without_extension, data_to_be_saved)
 
     log_level = "DEBUG" if os.getenv("DEBUG") == "1" else "INFO"
-    logger.log(log_level, f"Data saved to {file_path_without_extension}")
+    logger.log(log_level, f"Data saved to {file_path_without_extension}.{file_extension}")
+
