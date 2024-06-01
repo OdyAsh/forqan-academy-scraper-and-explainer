@@ -7,3 +7,4 @@ logs/*
 scripts/logs/*
 secretss/*
 scripts/main.ipynb
+.vscode/forqan-academy-scraper-and-explainer.code-workspace

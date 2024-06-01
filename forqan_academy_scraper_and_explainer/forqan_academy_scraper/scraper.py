@@ -215,21 +215,21 @@ def get_lessons_info_using_regex(modules_name_and_html: List[Tuple[str, str]]) -
     Returns:
         List[List[Tuple[str, str]]]: A list of list of tuples, where each tuple contains the lesson's name and URL.
     """
-    lessons_names_and_urls = []
-    for module in modules_name_and_html:
+    lessons_names_and_urls_per_module = []
+    for cur_module in modules_name_and_html:
         
         # getting current module's info
-        module_name, module_html_page = module
+        cur_module_name, cur_module_html_page = cur_module
         
         # getting each lesson's name and URL for the current module
-        a_tag_pattern = r'<a class="ld-item-name.*?" href="(.*?)">.*?<span class="ld-topic-title">(.*?)</span>'
-        cur_lesson_names_and_urls = re.findall(a_tag_pattern, module_html_page, re.DOTALL)
-        if cur_lesson_names_and_urls:
+        a_tag_pattern = r'<a class="ld-table-list-item-preview.*?" href="(.*?)">.*?<span class="ld-topic-title">(.*?)</span>'
+        cur_module_lessons_names_and_urls = re.findall(a_tag_pattern, cur_module_html_page, re.DOTALL)
+        if cur_module_lessons_names_and_urls:
             # Switch the order of the groups in each match
-            cur_lesson_names_and_urls = [(match[1], match[0]) for match in cur_lesson_names_and_urls]
+            cur_module_lessons_names_and_urls = [(match[1], match[0]) for match in cur_module_lessons_names_and_urls]
 
-        logger.info(f"Lessons matched for module {module_name}:\n{cur_lesson_names_and_urls}\n")
-        lessons_names_and_urls.append(cur_lesson_names_and_urls)
-        save_data(cur_lesson_names_and_urls, f"lessons_info for {module_name}", file_extension="json")
+        logger.info(f"Lessons matched for module {cur_module_name}:\n{cur_module_lessons_names_and_urls}\n")
+        lessons_names_and_urls_per_module.append(cur_module_lessons_names_and_urls)
+        save_data(cur_module_lessons_names_and_urls, f"lessons_info for {cur_module_name}", file_extension="json")
 
-    return lessons_names_and_urls
+    return lessons_names_and_urls_per_module

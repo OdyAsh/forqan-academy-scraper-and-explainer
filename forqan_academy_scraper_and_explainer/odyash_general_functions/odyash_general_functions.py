@@ -102,6 +102,21 @@ def _save_data_to_txt(file_path_without_extension: str, data_to_be_saved: Any) -
     with open(f'{file_path_without_extension}.txt', "w") as file:
         file.write(str(data_to_be_saved))
 
+# TODO: prettify the HTML when saving to html file
+def _save_data_to_html(file_path_without_extension: str, data_to_be_saved: Any) -> None:
+    """
+    Save data to an HTML file.
+
+    Args:
+        file_path_without_extension (str): The path of the file.
+        data_to_be_saved (Any): The data to be saved.
+
+    Returns:
+        None
+    """
+    with open(f'{file_path_without_extension}.html', "w") as file:
+        file.write(data_to_be_saved)
+
 def _save_data_to_pkl(file_path_without_extension: str, data_to_be_saved: Any) -> None:
     """
     Save data to a pickle file.
@@ -130,6 +145,8 @@ def _save_data_based_on_extension(file_extension: Union[str, None], file_path_wi
     """
     if file_extension == "txt":
         _save_data_to_txt(file_path_without_extension, data_to_be_saved)
+    elif file_extension is "html":
+        _save_data_to_html(file_path_without_extension, data_to_be_saved)
     elif file_extension == "pkl":
         _save_data_to_pkl(file_path_without_extension, data_to_be_saved)
     elif file_extension == "json":
