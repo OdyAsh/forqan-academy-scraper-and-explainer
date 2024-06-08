@@ -5,6 +5,11 @@ from typing import Any, Union
 from pyprojroot import here
 from logaru_logger.the_logger import logger
 
+# TODO (importance level: low): logic that will set "SAVED_FILES_DICT" to key:value pairs 
+#   based on the file name and the file path without extension
+#   then, a boolean flag in save_data() to ask if the developer wants to
+#   overwrite a saved file within the same session or increase its prefix counter its time its run within the same ipython session
+
 def _prefix_str_with_global_counter(string: str) -> str:
     """
     Prefix a string with a counter.
@@ -86,7 +91,7 @@ def _save_data_to_json(file_path_without_extension: str, data_to_be_saved: Any) 
         None
     """
     with open(f'{file_path_without_extension}.json', "w") as file:
-        json.dump(data_to_be_saved, file, ensure_ascii=False, indent=4)
+        json.dump(data_to_be_saved, file, ensure_ascii=False, indent=2)
 
 def _save_data_to_txt(file_path_without_extension: str, data_to_be_saved: Any) -> None:
     """

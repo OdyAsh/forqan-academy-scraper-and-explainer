@@ -1,6 +1,7 @@
 import os
 import functools
 from typing import Dict, List, Optional, Tuple, Union, Literal, Any
+from bs4 import BeautifulSoup
 import requests
 from requests import Session, Response
 import re
@@ -200,7 +201,7 @@ def get_modules_info_using_regex(forqan_modules_urls: List[str], session) -> Lis
     return modules_name_and_html    
 
 @log_decorator()
-def get_lessons_info_using_regex(modules_name_and_html: List[Tuple[str, str]]) -> List[List[Tuple[str, str]]]:
+def get_lessons_name_and_urls_using_regex(modules_name_and_html: List[Tuple[str, str]]) -> List[List[Tuple[str, str]]]:
     """
     Get the lessons info from each module page.
 
@@ -222,14 +223,57 @@ def get_lessons_info_using_regex(modules_name_and_html: List[Tuple[str, str]]) -
         cur_module_name, cur_module_html_page = cur_module
         
         # getting each lesson's name and URL for the current module
-        a_tag_pattern = r'<a class="ld-table-list-item-preview.*?" href="(.*?)">.*?<span class="ld-topic-title">(.*?)</span>'
-        cur_module_lessons_names_and_urls = re.findall(a_tag_pattern, cur_module_html_page, re.DOTALL)
+        # TODO (learning, importance level: low): see how to not hardcode the `https://forqanacademy.com` part, 
+        # while at the same time, not use `.*?/topic` since it continues to match in the html until it finds a url with `/topic` in it
+        a_tag_pattern = r'<a class="ld-table-list-item-preview.*?" href="(https://forqanacademy.com/topic/.*?)">.*?<span class="ld-topic-title">(.*?)</span>'
+        # IMPLEMENTATION NOTE: re.DOTALL is used to match newlines as well when using the dot (.) metacharacter
+        cur_module_lessons_names_and_urls = re.findall(a_tag_pattern, cur_module_html_page, re.DOTALL) 
         if cur_module_lessons_names_and_urls:
             # Switch the order of the groups in each match
             cur_module_lessons_names_and_urls = [(match[1], match[0]) for match in cur_module_lessons_names_and_urls]
 
         logger.info(f"Lessons matched for module {cur_module_name}:\n{cur_module_lessons_names_and_urls}\n")
         lessons_names_and_urls_per_module.append(cur_module_lessons_names_and_urls)
-        save_data(cur_module_lessons_names_and_urls, f"lessons_info for {cur_module_name}", file_extension="json")
+        save_data(cur_module_lessons_names_and_urls, f"lessons_names_and_urls for {cur_module_name}", file_extension="json")
 
     return lessons_names_and_urls_per_module
+
+
+def _unused_manually_visualize_lesson_desc(session: Session) -> List[str]:
+    """
+    Check this documentation file for details on what this unused function does:
+    `doc/extracting_video_desc_logic/possible_htmls.md`
+    """
+    tmp_links = [
+        # no desc. header
+        r'https://forqanacademy.com/topic/%d8%a7%d9%84%d9%85%d8%ad%d8%a7%d8%b6%d8%b1%d8%a9-1-%d8%a7%d9%84%d9%85%d8%b1%d8%ad%d9%84%d8%a9-%d8%a7%d9%84%d9%85%d9%83%d9%8a%d8%a9/',
+        
+        # h4 li desc.
+        r'https://forqanacademy.com/topic/%d8%a7%d9%84%d9%85%d8%ad%d8%a7%d8%b6%d8%b1%d8%a9-6-%d8%ba%d8%b2%d9%88%d8%a9-%d8%a7%d9%84%d8%a3%d8%ad%d8%b2%d8%a7%d8%a8/',
+        r'https://forqanacademy.com/topic/%d8%a7%d9%84%d9%85%d8%ad%d8%a7%d8%b6%d8%b1%d8%a9-2-%d8%a7%d9%84%d8%af%d8%b1%d9%88%d8%b3-%d8%a7%d9%84%d9%85%d8%b3%d8%aa%d9%81%d8%a7%d8%af%d8%a9-%d9%85%d9%86-%d8%a7%d9%84%d9%85%d8%b1%d8%ad%d9%84%d8%a9/',
+        
+        # p desc.
+        r'https://forqanacademy.com/topic/%d8%a7%d9%84%d9%85%d8%ad%d8%a7%d8%b6%d8%b1%d8%a9-8-%d8%ba%d8%b2%d9%88%d8%a9-%d8%a8%d9%86%d9%8a-%d9%82%d8%b1%d9%8a%d8%b8%d8%a9/'
+    ]
+    # checking out HTML of lessons with varying description formatting
+    desc_contents = []
+    for i, link in enumerate(tmp_links):
+        resp = session.get(link)
+        lesson_html = resp.text
+
+        soup = BeautifulSoup(lesson_html, 'html.parser')
+        div_tag = soup.find('div', class_='ld-tab-content ld-visible lesson-materials-btns')
+        text_content = div_tag.get_text(separator='\n\n', strip=True)
+
+        # Print the text content
+        logger.debug(text_content)
+
+        save_data(text_content, 
+                    f"{i:02}_lesson_desc_content", 
+                    dir_name="../logs/temp_outputs_for_visualizing", 
+                    add_intermediate_counter_prefix=False,
+                    file_extension="txt")
+        
+        desc_contents.append(text_content)
+
+    return desc_contents

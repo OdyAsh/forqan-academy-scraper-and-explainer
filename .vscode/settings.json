@@ -9,7 +9,7 @@
     // 6. add special comments to the targeted .py file, as mentioned here: 
     // https://code.visualstudio.com/docs/python/jupyter-support-py
     
-    // 7. now, when you run the interactive notebook, the commands below will be executed automatically in the background
+    // 7. Outdated notes: now, when you run the interactive notebook, the commands below will be executed automatically in the background
     //    this means that whenever you update a **function** in an imported file, the changes will be reflected in the notebook
     
     //    However, for some reason, this doesn't work with **static classes** imported like this:
@@ -24,9 +24,13 @@
     //    moreover, the old attributes/methods of **instances of classes** will be retained, 
     //    even if the class has been updated, so the only way to see the changes is to assign a new instance of the class to a new variable
     
-    //    TLDR; when using autoreload, import functions and classes like so:
+    //    TLDR; when using autoreload, import classes and functions like so:
     //      import my_module as mm # then later write `mm.MyStaticClass`
-    //      from my_module import my_function
+    //      from my_module import my_function (check note 8. below)
+
+    // 8. Updated notes: same as 7., but sometimes, even using `from my_module import my_func` doesn't work sometimes
+    //    in that case, you can use `import my_module as mm` and then `mm.my_func` to make sure the changes are reflected in the notebook
+
     "jupyter.runStartupCommands": [
         "%load_ext autoreload", "%autoreload 2"
       ],

@@ -3,8 +3,6 @@
 # however, if you define an entirely new function or class in the imported modules (i.e., .py files)
 # then you'll need to re-run the 'from .. import' statements in the notebook
 try:    
-    if '__file__' in globals():
-        raise
     from IPython import get_ipython
     ipython = get_ipython()
     ipython.run_line_magic('load_ext', 'autoreload')
@@ -15,22 +13,33 @@ except Exception as e:
 # %% 
 # # Imports
 
+import os
 import re
 from typing import List, Tuple
 
-from forqan_academy_scraper.scraper import (
-    login, 
-    get_forqan_modules_urls_using_regex, 
-    get_modules_info_using_regex,
-    get_lessons_info_using_regex
-)
+from dotenv import load_dotenv
+from bs4 import BeautifulSoup
+
+# from forqan_academy_scraper.scraper import login, \
+#     get_forqan_modules_urls_using_regex, \
+#     get_modules_info_using_regex, \
+#     get_lessons_name_and_urls_using_regex
+
+from forqan_academy_scraper import scraper as fsc
+
 from logaru_logger.the_logger import logger
 from odyash_general_functions.odyash_general_functions import save_data
+
+# %%
+# Global variables
+
+# load the environment variables
+load_dotenv()
 
 # %% 
 logger.info("Welcome to Forqan scraper & Explainer!")
 
-session, response = login()
+session, response = fsc.login()
 
 login_response_html_string = response.text
 logger.debug(f"login_response_html_string: {login_response_html_string[-100:]}")
@@ -38,13 +47,13 @@ save_data(login_response_html_string, "login_response_html_string")
 
 # %% 
 # getting the URLs of each Forqan module using regex
-forqan_modules_urls = get_forqan_modules_urls_using_regex(login_response_html_string)
+forqan_modules_urls = fsc.get_forqan_modules_urls_using_regex(login_response_html_string)
 logger.debug(f"forqan_modules_urls: {forqan_modules_urls}")
 save_data(forqan_modules_urls, "forqan_modules_urls", file_extension="json")
 
 # %%
 # getting the info (tuple) of each module page
-modules_name_and_html = get_modules_info_using_regex(forqan_modules_urls, session)
+modules_name_and_html = fsc.get_modules_info_using_regex(forqan_modules_urls, session)
 
 # saving intermediate outputs for debugging purposes
 save_data(modules_name_and_html[0][1], "module_pages_first_url_response")
@@ -52,40 +61,91 @@ save_data(modules_name_and_html[-1][1], "module_pages_last_url_response")
 
 # %%
 # getting the lessons info from each module page
-lessons_info = get_lessons_info_using_regex(modules_name_and_html)
+lessons_names_and_urls_per_module = fsc.get_lessons_name_and_urls_using_regex(modules_name_and_html)
 
 # saving intermediate outputs for debugging purposes
-save_data(lessons_info, "lessons_info", file_extension="json")
+save_data(lessons_names_and_urls_per_module, "lessons_names_and_urls_per_module", file_extension="json")
 
 # %%
-## TEMP. TODO: Refactor when the final structure of the data is known
-from bs4 import BeautifulSoup
-
-tmp_links = [
-    # no desc. header
-    r'https://forqanacademy.com/topic/%d8%a7%d9%84%d9%85%d8%ad%d8%a7%d8%b6%d8%b1%d8%a9-1-%d8%a7%d9%84%d9%85%d8%b1%d8%ad%d9%84%d8%a9-%d8%a7%d9%84%d9%85%d9%83%d9%8a%d8%a9/',
+# getting the video URLs and descriptions for each lesson
+final_forqan_info = {}
+for i, ((module_name, _), module_url) in enumerate(zip(modules_name_and_html, forqan_modules_urls)):
+    module_num = f"{i+1:02d}"
+    logger.debug(f"module num and name: {module_num}: {module_name}")
+    cur_module_lessons = lessons_names_and_urls_per_module[i]
+    final_forqan_info[f"module_{module_num}"] = {"name": module_name, "url": module_url, "lessons": []}
     
-    # h4 li desc.
-    r'https://forqanacademy.com/topic/%d8%a7%d9%84%d9%85%d8%ad%d8%a7%d8%b6%d8%b1%d8%a9-6-%d8%ba%d8%b2%d9%88%d8%a9-%d8%a7%d9%84%d8%a3%d8%ad%d8%b2%d8%a7%d8%a8/',
-    r'https://forqanacademy.com/topic/%d8%a7%d9%84%d9%85%d8%ad%d8%a7%d8%b6%d8%b1%d8%a9-2-%d8%a7%d9%84%d8%af%d8%b1%d9%88%d8%b3-%d8%a7%d9%84%d9%85%d8%b3%d8%aa%d9%81%d8%a7%d8%af%d8%a9-%d9%85%d9%86-%d8%a7%d9%84%d9%85%d8%b1%d8%ad%d9%84%d8%a9/',
-    
-    # p desc.
-    r'https://forqanacademy.com/topic/%d8%a7%d9%84%d9%85%d8%ad%d8%a7%d8%b6%d8%b1%d8%a9-8-%d8%ba%d8%b2%d9%88%d8%a9-%d8%a8%d9%86%d9%8a-%d9%82%d8%b1%d9%8a%d8%b8%d8%a9/'
-]
-# checking out html of a single lesson page without headers
-resp = session.get(tmp_links[3])
-lesson_html = resp.text
+    for lesson_name, lesson_url in cur_module_lessons:
+        logger.debug(f"lesson_name: {lesson_name}")
+        logger.debug(f"lesson_url: {lesson_url}")
+        lesson_response = session.get(lesson_url)
+        lesson_html_string = lesson_response.text
+        soup = BeautifulSoup(lesson_html_string, 'html.parser')
+        lesson_content = {}
 
-soup = BeautifulSoup(lesson_html, 'html.parser')
-div_tag = soup.find('div', class_='ld-tab-content ld-visible lesson-materials-btns')
-text_content = div_tag.get_text(separator='\n\n', strip=True)
+        if re.search(r'يرجى العودة وإكمال', lesson_html_string) or re.search(r'متوفر في', lesson_html_string):
+            lesson_content['not_available'] = True
+            logger.debug(f"lesson_name: {lesson_name} is not available yet")
+        elif "المحاضرات" in lesson_name:
+            logger.debug(f"revision lesson_title: {lesson_name}")
+            pdf_name = lesson_name.replace('&#8211;', '-')
+            invalid_chars = r'[\\/:*?"<>|]'
+            pdf_name = re.sub(invalid_chars, '', lesson_name)
+            lesson_content['pdf_name'] = pdf_name
+            logger.debug(f"its pdf_name: {pdf_name}")
 
-# Print the text content
-print(text_content)
+            pdf_url = soup.find('a', class_='ui button fluid primary btn text-link')['href']
+            lesson_content['pdf_url'] = pdf_url
+            logger.debug(f"pdf_url: {pdf_url}")
+        else:
+            video_url = soup.find('iframe')['src']
+            lesson_content['video_url'] = video_url
+            logger.debug(f"video_url: {video_url}")
 
-save_data(text_content, 
-            "04_content", 
-            dir_name="../logs/temp_outputs_for_visualizing", 
-            add_intermediate_counter_prefix=False,
-            file_extension="txt")
+            div_tag = soup.find('div', class_='ld-tab-content ld-visible lesson-materials-btns')
+            text_content = div_tag.get_text(separator='\n\n', strip=True)
+            # a keyword which indicates the end of the section describing the video
+            # check _unused_manually_visualize_lesson_desc() for details
+            desc_termination_keyword = "لمشاهدة"
+            video_description = text_content.split(desc_termination_keyword)[0].strip()
+            lesson_content['video_description'] = video_description
+            logger.debug(f"video_description: {video_description}")
+        
+        final_forqan_info[f"module_{module_num}"]["lessons"].append({
+            "name": lesson_name,
+            "url": lesson_url,
+            **lesson_content
+        })
+
+# saving intermediate outputs for debugging purposes
+save_data(final_forqan_info, "final_forqan_info", file_extension="json")
+
+
+# %%
+# create a dictionary with the following structure:
+# {
+#     "module_1": {
+#         "name": "module_1_name",
+#         "url": "module_1_URL",
+#         "lessons": [
+#             {
+#                 "name": "lesson_1_name",
+#                 "url": "lesson_1_URL",
+#                 "video_url": "lesson_1_video_URL"
+#                 "video_description": "lesson_1_video_description"
+#             },
+#             {
+#                 ...
+#             },
+#             ...
+#         ]
+#     },
+#     "module_2": {
+#         ...
+#     },
+#     ...
+# }
+
+
+
 # %%
