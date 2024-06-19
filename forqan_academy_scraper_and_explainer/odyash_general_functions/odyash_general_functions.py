@@ -56,11 +56,12 @@ def _get_directory(dir_name: Union[str, None], intermediate_output: bool) -> str
         str: The directory path.
     """
     if dir_name is None:
-        if intermediate_output:
-            dir_name = os.path.join(here(), os.getenv("INTERMEDIATE_OUTPUTS_DIR"))
-        else:
-            dir_name = os.path.join(here(), os.getenv("FINAL_OUTPUTS_DIR"))
-
+        dir_name = ""
+    if intermediate_output:
+        dir_name = os.path.join(here(), os.getenv("INTERMEDIATE_OUTPUTS_DIR"), dir_name)
+    else:
+        dir_name = os.path.join(here(), os.getenv("FINAL_OUTPUTS_DIR"), dir_name)
+    dir_name = os.path.normpath(dir_name)
     _create_directory(dir_name)
 
     return dir_name
@@ -139,6 +140,20 @@ def _save_data_to_pkl(file_path_without_extension: str, data_to_be_saved: Any) -
     with open(f'{file_path_without_extension}.pkl', "wb") as file:
         pickle.dump(data_to_be_saved, file)
 
+def _save_data_to_pdf(file_path_without_extension: str, data_to_be_saved: Any) -> None:
+    """
+    Save data to a PDF file.
+
+    Args:
+        file_path_without_extension (str): The path of the file.
+        data_to_be_saved (Any): The data to be saved.
+
+    Returns:
+        None
+    """
+    with open(f'{file_path_without_extension}.pdf', "wb") as file:
+        file.write(data_to_be_saved)
+
 def _save_data_based_on_extension(file_extension: Union[str, None], file_path_without_extension: str, data_to_be_saved: Any) -> None:
     """
     Choose the appropriate save function based on the file extension.
@@ -159,6 +174,8 @@ def _save_data_based_on_extension(file_extension: Union[str, None], file_path_wi
         _save_data_to_pkl(file_path_without_extension, data_to_be_saved)
     elif file_extension == "json":
         _save_data_to_json(file_path_without_extension, data_to_be_saved)
+    elif file_extension == "pdf":
+        _save_data_to_pdf(file_path_without_extension, data_to_be_saved)
     else:
         raise ValueError("Invalid file_extension. Supported file_extensions are 'txt', 'pkl', and 'json'.")
 
@@ -184,38 +201,7 @@ def save_data(data_to_be_saved: Any,
     """
     dir_name = _get_directory(dir_name, intermediate_output)
     file_path_without_extension = _get_file_path_without_extension(dir_name, file_name, add_intermediate_counter_prefix)
-    
     _save_data_based_on_extension(file_extension, file_path_without_extension, data_to_be_saved)
 
     log_level = "DEBUG" if os.getenv("DEBUG") == "1" else "INFO"
     logger.log(log_level, f"Data saved to {file_path_without_extension}.{file_extension}")
-
-def download_revision_pdfs(forqan_lessons_info: Dict) -> None:
-    """
-    Downloads PDFs from URLs found in the nested dictionary 'forqan_lessons_info' and saves them with names specified in the dictionary.
-
-    The PDFs are saved in a subdirectory 'revisions_pdfs' within the directory specified by the 'FINAL_OUTPUTS_DIR' environment variable. 
-    This subdirectory is created if it does not already exist.
-
-    Args:
-        forqan_lessons_info (Dict): A nested dictionary containing 'pdf_url' and 'pdf_name' keys among others.
-
-    Returns:
-        None
-    """
-    revisions_dir = os.path.join(os.environ["FINAL_OUTPUTS_DIR"], "revisions_pdfs")
-    os.makedirs(revisions_dir, exist_ok=True)
-
-    for module_info in forqan_lessons_info.values():
-        for lesson in module_info.get("lessons", []):
-            if "pdf_url" in lesson and "pdf_name" in lesson:
-                pdf_url = lesson["pdf_url"]
-                pdf_name = lesson["pdf_name"]
-                save_path = os.path.join(revisions_dir, f"{pdf_name}.pdf")
-                save_data(data_to_be_saved=requests.get(pdf_url).content, 
-                        file_name=pdf_name, 
-                        dir_name=revisions_dir, 
-                        file_extension="pdf", 
-                        intermediate_output=False, 
-                        add_intermediate_counter_prefix=False)
-                print(f"Downloaded and saved: {save_path}")

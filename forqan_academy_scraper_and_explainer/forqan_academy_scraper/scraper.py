@@ -390,3 +390,39 @@ def get_video_urls_descriptions_and_pdf_metadata(modules_name_and_html: List[Tup
     save_data(forqan_lessons_info, "forqan_lessons_info", file_extension="json")
 
     return forqan_lessons_info
+
+
+def download_revision_pdfs(forqan_lessons_info: Dict) -> None:
+    """
+    Downloads PDFs from URLs found in the nested dictionary 'forqan_lessons_info' and saves them with names specified in the dictionary.
+
+    The PDFs are saved in a subdirectory 'revisions_pdfs' within the directory specified by the 'FINAL_OUTPUTS_DIR' environment variable. 
+    This subdirectory is created if it does not already exist.
+
+    Args:
+        forqan_lessons_info (Dict): A nested dictionary containing 'pdf_url' and 'pdf_name' keys among others.
+
+    Returns:
+        None
+    """
+
+    for module_info in forqan_lessons_info.values():
+        module_name = module_info.get("name", "unknown_module")
+        dir_name = os.path.join("revisions_pdfs", module_name)
+
+        for lesson in module_info.get("lessons", []):
+            if "pdf_url" in lesson and "pdf_name" in lesson:
+                pdf_url = lesson["pdf_url"]
+                pdf_name = lesson["pdf_name"]
+                response = requests.get(pdf_url)
+                if response.status_code != 200:
+                    logger.error(f"Failed to download this pdf: {pdf_url}")
+                    continue
+                pdf_content = response.content
+                save_data(data_to_be_saved=pdf_content, 
+                        file_name=pdf_name, 
+                        dir_name=dir_name, 
+                        file_extension="pdf", 
+                        intermediate_output=False, 
+                        add_intermediate_counter_prefix=False)
+                logger.info(f"Downloaded and saved: {pdf_name}.pdf")

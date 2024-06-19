@@ -62,28 +62,16 @@ forqan_lessons_info = fsc.get_video_urls_descriptions_and_pdf_metadata(modules_n
                                                                     session)
 
 # %%
-# TODO: delete draft code below (or migrate to save_data() when extension is pdf)
-import requests
 
-def download_file_from_google_drive(drive_url, save_path):
-    """
-    Download a file from Google Drive given its URL and save it to a specified path.
-    
-    Args:
-        drive_url (str): The URL of the Google Drive file.
-        save_path (str): The path (including filename) where the file should be saved.
-    """
-    response = requests.get(drive_url)
-    if response.status_code == 200:
-        with open(save_path, 'wb') as f:
-            f.write(response.content)
-        print(f"File has been downloaded and saved as {save_path}")
-    else:
-        print("Failed to download the file.")
+# save the pdfs
+fsc.download_revision_pdfs(forqan_lessons_info)
 
-# Example usage
-drive_url = "https://drive.google.com/uc?id=1upcHIK9F18Qe-PwRr2qr1os3k3CcjSqz"
-save_path = "downloaded_file.pdf"  # You need to assign a name manually
-download_file_from_google_drive(drive_url, save_path)
+# %%
+# TODO: add code after the imports to just fetch the `forqan_lessons_info` from a local json file, and then PDF text extraction code to be written below
+#       also, check possible pdf text extraction libraries like PyMuPDF, pdfplumber, etc... relevant links:
+#       4-o
+#       https://github.com/zaakki-ahamed/Arabic_OCR_From_PDF/blob/main/Arabic_OCR.py
+#       https://pymupdf.readthedocs.io/en/latest/installation.html , https://pymupdf.readthedocs.io/en/latest/rag.html
+#       https://github.com/jsvine/pdfplumber?tab=readme-ov-file
 
 # %%
