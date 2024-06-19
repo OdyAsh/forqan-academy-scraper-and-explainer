@@ -1,11 +1,11 @@
 import os
 import functools
 from typing import Dict, List, Optional, Tuple, Union, Literal, Any
+import html
 from bs4 import BeautifulSoup
 import requests
 from requests import Session, Response
 import re
-
 from logaru_logger.the_logger import logger, log_decorator
 from odyash_general_functions.odyash_general_functions import save_data
 
@@ -147,7 +147,12 @@ def login(username: str = None,
 
     response = sess.post('https://forqanacademy.com/login/', headers=headers, data=data, cookies=cookies)
 
-    return sess, response
+    login_response_html_string = response.text
+    logger.debug(f"login_response_html_string: {login_response_html_string[-100:]}")
+    save_data(login_response_html_string, "login_response_html_string")
+
+
+    return sess, login_response_html_string
 
 
 @log_decorator()
@@ -168,10 +173,13 @@ def get_forqan_modules_urls_using_regex(html_string : str) -> List[str]:
     # Find all matches in the HTML string
     forqan_modules_urls = re.findall(pattern, html_string)
     
+    logger.debug(f"forqan_modules_urls: {forqan_modules_urls}")
+    save_data(forqan_modules_urls, "forqan_modules_urls", file_extension="json")
+
     return forqan_modules_urls
 
 @log_decorator()
-def get_modules_info_using_regex(forqan_modules_urls: List[str], session) -> List[Tuple[str, str]]:
+def get_modules_info_using_regex(forqan_modules_urls: List[str], session: Session) -> List[Tuple[str, str]]:
     """
     Fetches and returns information about each module.
 
@@ -197,6 +205,11 @@ def get_modules_info_using_regex(forqan_modules_urls: List[str], session) -> Lis
             module_name = "No module name found"
         logger.info(f"Module name: {module_name}")
         modules_name_and_html.append((module_name, response.text))
+
+    # saving intermediate outputs for debugging purposes
+    save_data(modules_name_and_html[0][1], "module_pages_first_url_response")
+    save_data(modules_name_and_html[-1][1], "module_pages_last_url_response")
+
 
     return modules_name_and_html    
 
@@ -235,6 +248,9 @@ def get_lessons_name_and_urls_using_regex(modules_name_and_html: List[Tuple[str,
         logger.info(f"Lessons matched for module {cur_module_name}:\n{cur_module_lessons_names_and_urls}\n")
         lessons_names_and_urls_per_module.append(cur_module_lessons_names_and_urls)
         save_data(cur_module_lessons_names_and_urls, f"lessons_names_and_urls for {cur_module_name}", file_extension="json")
+
+    # saving intermediate outputs for debugging purposes
+    save_data(lessons_names_and_urls_per_module, "lessons_names_and_urls_per_module", file_extension="json")
 
     return lessons_names_and_urls_per_module
 
@@ -277,3 +293,100 @@ def _unused_manually_visualize_lesson_desc(session: Session) -> List[str]:
         desc_contents.append(text_content)
 
     return desc_contents
+
+
+
+def get_video_urls_descriptions_and_pdf_metadata(modules_name_and_html: List[Tuple[str, str]], 
+                                            forqan_modules_urls: List[str], 
+                                            lessons_names_and_urls_per_module: List[List[Tuple[str, str]]],
+                                            session: Session
+                                            ) -> Dict[str, Dict]:
+    """
+    Extracts and compiles video URLs, descriptions, and occasionally PDF names/URLs for each lesson in each module. PDFs summarize a couple of lessons.
+
+    - Iterates through each module, using its name and URL to gather lesson information.
+    - For each lesson, it checks if the lesson is available, a revision lesson, or a normal lesson and gathers appropriate data:
+        - If not available, marks the lesson as such.
+        - If a revision lesson, extracts the PDF name and URL which may summarize a couple of lessons.
+        - For normal lessons, extracts the video URL and description.
+    - Stores all extracted information in a structured dictionary, including video URLs, descriptions, and PDF information when applicable.
+
+    Args:
+        modules_name_and_html (List[Tuple[str, str]]): A list of tuples containing module names and their HTML content.
+        forqan_modules_urls (List[str]): A list of URLs for each module.
+        lessons_names_and_urls_per_module (List[List[Tuple[str, str]]]): A nested list where each sublist contains tuples of lesson names and URLs for a module.
+
+    Returns:
+        Dict[str, Dict]: A dictionary with module information, including lesson details such as names, URLs, availability, content descriptions, and occasionally PDF names/URLs.
+    """
+    forqan_lessons_info = {}
+    # iterating by each module name/url
+    for i, ((module_name, _), module_url) in enumerate(zip(modules_name_and_html, forqan_modules_urls)):
+        module_num = f"{i+1:02d}"
+        logger.debug(f"module num and name: {module_num}: {module_name}")
+        cur_module_lessons = lessons_names_and_urls_per_module[i]
+        forqan_lessons_info[f"module_{module_num}"] = {"name": module_name, "url": module_url, "lessons": []}
+        
+        # iterating by each lesson name/url
+        for lesson_name, lesson_url in cur_module_lessons:
+            logger.debug(f"lesson_name: {lesson_name}")
+            logger.debug(f"lesson_url: {lesson_url}")
+            lesson_response = session.get(lesson_url)
+            lesson_html_string = lesson_response.text
+            soup = BeautifulSoup(lesson_html_string, 'html.parser')
+            lesson_content = {}
+
+            # check if the lesson is not available yet
+            if re.search(r'يرجى العودة وإكمال', lesson_html_string) or re.search(r'متوفر في', lesson_html_string):
+                # store lesson's info as non-available
+                lesson_content['not_available'] = True
+                logger.debug(f"lesson_name: {lesson_name} is not available yet")
+
+            # check if the lesson is a revision lesson
+            elif "المحاضرات" in lesson_name:
+                logger.debug(f"revision lesson_title: {lesson_name}")
+
+                # ensure pdf_name is compatible with the file-naming system
+                lesson_name = html.unescape(lesson_name).replace('–', '-')
+                pdf_name = lesson_name
+                invalid_chars = r'[\\/:*?"<>|]'
+                pdf_name = re.sub(invalid_chars, '', pdf_name)
+                lesson_content['pdf_name'] = pdf_name
+                logger.debug(f"its pdf_name: {pdf_name}")
+
+                # get pdf URL to download later
+                pdf_url = soup.find('a', class_='ui button fluid primary btn text-link')['href']
+                lesson_content['pdf_url'] = pdf_url
+                logger.debug(f"pdf_url: {pdf_url}")
+
+            # else, this is a normal and available lesson
+            else:
+                # get video URL to use later for getting .srt files using speech-to-text AI model
+                try:
+                    video_url = soup.find('iframe')['src']
+                except:
+                    logger.error('unable to find video URL, will print the soup HTML content for debugging purposes')
+                    logger.debug(f"soup HTML content: {soup.prettify()}")
+
+                lesson_content['video_url'] = video_url
+                logger.debug(f"video_url: {video_url}")
+
+                # get the description of the video
+                div_tag = soup.find('div', class_='ld-tab-content ld-visible lesson-materials-btns')
+                text_content = div_tag.get_text(separator='\n\n', strip=True)
+                desc_termination_keyword = "لمشاهدة"
+                video_description = text_content.split(desc_termination_keyword)[0].strip()
+                lesson_content['video_description'] = video_description
+                logger.debug(f"video_description: {video_description}")
+            
+            # store current lesson's info to dictionary
+            forqan_lessons_info[f"module_{module_num}"]["lessons"].append({
+                "name": lesson_name,
+                "url": lesson_url,
+                **lesson_content
+            })
+
+    # saving intermed`iate outputs for debugging purposes
+    save_data(forqan_lessons_info, "forqan_lessons_info", file_extension="json")
+
+    return forqan_lessons_info

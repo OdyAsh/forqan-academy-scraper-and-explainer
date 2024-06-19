@@ -1,8 +1,11 @@
 import json
 import os
 import pickle
-from typing import Any, Union
+from typing import Any, Union, Dict
+import requests
+
 from pyprojroot import here
+
 from logaru_logger.the_logger import logger
 
 # TODO (importance level: low): logic that will set "SAVED_FILES_DICT" to key:value pairs 
@@ -187,3 +190,32 @@ def save_data(data_to_be_saved: Any,
     log_level = "DEBUG" if os.getenv("DEBUG") == "1" else "INFO"
     logger.log(log_level, f"Data saved to {file_path_without_extension}.{file_extension}")
 
+def download_revision_pdfs(forqan_lessons_info: Dict) -> None:
+    """
+    Downloads PDFs from URLs found in the nested dictionary 'forqan_lessons_info' and saves them with names specified in the dictionary.
+
+    The PDFs are saved in a subdirectory 'revisions_pdfs' within the directory specified by the 'FINAL_OUTPUTS_DIR' environment variable. 
+    This subdirectory is created if it does not already exist.
+
+    Args:
+        forqan_lessons_info (Dict): A nested dictionary containing 'pdf_url' and 'pdf_name' keys among others.
+
+    Returns:
+        None
+    """
+    revisions_dir = os.path.join(os.environ["FINAL_OUTPUTS_DIR"], "revisions_pdfs")
+    os.makedirs(revisions_dir, exist_ok=True)
+
+    for module_info in forqan_lessons_info.values():
+        for lesson in module_info.get("lessons", []):
+            if "pdf_url" in lesson and "pdf_name" in lesson:
+                pdf_url = lesson["pdf_url"]
+                pdf_name = lesson["pdf_name"]
+                save_path = os.path.join(revisions_dir, f"{pdf_name}.pdf")
+                save_data(data_to_be_saved=requests.get(pdf_url).content, 
+                        file_name=pdf_name, 
+                        dir_name=revisions_dir, 
+                        file_extension="pdf", 
+                        intermediate_output=False, 
+                        add_intermediate_counter_prefix=False)
+                print(f"Downloaded and saved: {save_path}")

@@ -8,3 +8,4 @@ scripts/logs/*
 secretss/*
 scripts/main.ipynb
 .vscode/forqan-academy-scraper-and-explainer.code-workspace
+scripts/downloaded_file.pdf
